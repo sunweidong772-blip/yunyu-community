@@ -28,8 +28,13 @@ jobs:
         run: flutter pub get
         working-directory: app
 
+      - name: Analyze code
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+        working-directory: app
+        continue-on-error: true
+
       - name: Build APK
-        run: flutter build apk --release --no-shrink
+        run: flutter build apk --release
         working-directory: app
 
       - name: Upload APK

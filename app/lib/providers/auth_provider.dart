@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api_service.dart';
@@ -27,37 +28,15 @@ class AuthProvider extends ChangeNotifier {
     final userString = prefs.getString(AppConstants.userKey);
 
     if (_token != null && userString != null) {
-      _user = Map<String, dynamic>.from(
-        await _decodeUser(userString),
-      );
-      _isLoggedIn = true;
-      _api.setToken(_token!);
+      try {
+        _user = Map<String, dynamic>.from(jsonDecode(userString));
+        _isLoggedIn = true;
+        _api.setToken(_token!);
+      } catch (e) {
+        _user = null;
+        _isLoggedIn = false;
+      }
       notifyListeners();
-    }
-  }
-
-  Future<Map<String, dynamic>> _decodeUser(String userString) async {
-    // 简单的JSON解析
-    try {
-      return Map<String, dynamic>.from(
-        (await SharedPreferences.getInstance()).getString(AppConstants.userKey) != null
-            ? _parseJson(userString)
-            : {},
-      );
-    } catch (e) {
-      return {};
-    }
-  }
-
-  Map<String, dynamic> _parseJson(String str) {
-    // 简单的JSON解析，实际项目中应该用jsonDecode
-    try {
-      return Map<String, dynamic>.from(
-        // ignore: avoid_dynamic_calls
-        ({}..addAll({})),
-      );
-    } catch (e) {
-      return {};
     }
   }
 
@@ -75,7 +54,7 @@ class AuthProvider extends ChangeNotifier {
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(AppConstants.tokenKey, _token!);
-      await prefs.setString(AppConstants.userKey, _user.toString());
+      await prefs.setString(AppConstants.userKey, jsonEncode(_user));
     }
 
     _isLoading = false;
@@ -97,7 +76,7 @@ class AuthProvider extends ChangeNotifier {
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(AppConstants.tokenKey, _token!);
-      await prefs.setString(AppConstants.userKey, _user.toString());
+      await prefs.setString(AppConstants.userKey, jsonEncode(_user));
     }
 
     _isLoading = false;
@@ -124,7 +103,7 @@ class AuthProvider extends ChangeNotifier {
     if (result['success']) {
       _user = Map<String, dynamic>.from(result['data']);
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(AppConstants.userKey, _user.toString());
+      await prefs.setString(AppConstants.userKey, jsonEncode(_user));
       notifyListeners();
     }
   }

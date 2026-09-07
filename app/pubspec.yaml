@@ -1,5 +1,5 @@
 name: yunyu_community
-description: 云屿 - 年轻、温暖、有陪伴感的软件聚合社区
+description: 云屿 - 年轻温暖的软件聚合社区
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -14,14 +14,9 @@ dependencies:
   provider: ^6.1.1
   shared_preferences: ^2.2.2
   cached_network_image: ^3.3.0
-  flutter_svg: ^2.0.9
   intl: ^0.18.1
   shimmer: ^3.0.0
-  flutter_staggered_grid_view: ^0.7.0
-  image_picker: ^1.0.4
   url_launcher: ^6.2.1
-  package_info_plus: ^5.0.0
-  toastification: ^1.2.0
 
 dev_dependencies:
   flutter_test:
